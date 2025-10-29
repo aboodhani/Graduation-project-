@@ -1,0 +1,92 @@
+:root{
+  --header-h:60px;          /* will be set precisely by JS below */
+  --rail-w:96px;            /* right rail width (matches screenshot) */
+  --cream:#f6f1e8;          /* page bg */
+  --rail-bg:#eef1f5;        /* rail bg */
+  --ink:#0c1a5b;            /* navy text / button */
+}
+
+/* Page background + push content below header */
+body{ background:var(--cream); }
+.app-main.container-fluid{
+  padding-left:0 !important;
+  padding-right:var(--rail-w) !important; /* keep content clear of the rail */
+  padding-top:var(--header-h) !important;
+}
+
+/* ================= Right Rail (full-height column) ================= */
+.right-tabs{
+  position:fixed;
+  top:0; right:0; bottom:0;
+  width:var(--rail-w);
+  background:var(--rail-bg);
+  border-left:1px solid #dfe3ea;
+  z-index:1020;
+  padding-top:var(--header-h);       /* start just under header */
+  display:flex;
+}
+.right-tabs .tabs-nav{
+  display:flex; flex-direction:column; gap:0;
+  width:100%;
+}
+.right-tabs .tab-link{
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  gap:8px; text-decoration:none; color:#2a2f36; background:transparent;
+  height:110px; width:100%;
+  position:relative;
+}
+.right-tabs .tab-link svg{ width:30px; height:30px }
+.right-tabs .tab-link span{ font-size:14px }
+.right-tabs .tab-link + .tab-link::before{
+  content:""; position:absolute; top:0; left:16px; right:16px; height:1px; background:#dfe3ea;
+}
+.right-tabs .tab-link.active span{ color:var(--ink); font-weight:600 }
+
+/* ================= HERO (short strip) ================= */
+.hero-strip{
+  position:relative;
+  width:100%;
+  height:240px;                       /* height in your screenshot */
+  overflow:hidden;
+  background:#000;
+  margin:0;                           /* flush to edges */
+}
+.hero-strip img{
+  position:absolute; inset:0;
+  width:100%; height:100%;
+  object-fit:cover;
+  filter:saturate(.96) contrast(.96);
+}
+.hero-strip::after{                    /* soft blue overlay like the pic */
+  content:""; position:absolute; inset:0;
+  background:linear-gradient(180deg, rgba(0,0,0,.18), rgba(0,0,0,.22));
+}
+.hero-heading{
+  position:sticky; left:60px; bottom:34px;
+  color:#fff;
+  font-weight:800;
+  font-size:clamp(28px, 5.2vw, 64px); /* big white title */
+  line-height:1.05;
+  letter-spacing:.2px;
+  text-shadow:0 2px 24px rgba(0,0,0,.35);
+}
+
+/* ================= Content Block (paragraph + CTA) ================= */
+.hero-copy{
+  max-width:1080px;
+  margin:34px 0 20px 60px;
+  font-size:clamp(16px, 2.2vw, 28px);
+  line-height:1.3;
+  color:#1f2530;
+}
+.cta-wrap{ margin:26px 0 60px 60px; }
+.btn-pill{
+  display:inline-block;
+  padding:12px 34px;
+  border-radius:999px;
+  background:var(--ink);
+  color:#fff; text-decoration:none; font-weight:600;
+  box-shadow:0 8px 24px rgba(12,26,91,.25);
+  border:0;
+}
+.btn-pill:focus, .btn-pill:hover{ filter:brightness(1.05) }
