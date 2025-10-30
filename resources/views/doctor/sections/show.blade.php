@@ -54,64 +54,90 @@
                         <p class="muted">Publish a new assignment for this section.</p>
                     </div>
 
-                    <form method="POST" action="{{ route('doctor.sections.assignments.store', $section->id) }}"
-                        class="form">
-                        @csrf
+{{-- Replace the form in your show.blade.php with this --}}
+<form method="POST" action="{{ route('doctor.sections.assignments.store', $section->id) }}" class="form">
+    @csrf
 
-                        <div class="form-row">
-                            <label for="title" class="form-label">Title <span class="req">*</span></label>
-                            <input id="title" name="title" class="input" required value="{{ old('title') }}"
-                                placeholder="e.g., WL Evaluation #1" />
-                            @error('title') <div class="error">{{ $message }}</div> @enderror
-                        </div>
+    {{-- Title --}}
+    <div class="form-row">
+        <label for="title" class="form-label">Title <span class="req">*</span></label>
+        <input id="title" 
+               name="title" 
+               class="input @error('title') is-invalid @enderror" 
+               required 
+               value="{{ old('title') }}"
+               placeholder="e.g., WL Evaluation #1" />
+        @error('title') 
+            <div class="error text-danger">{{ $message }}</div> 
+        @enderror
+    </div>
 
-                        <div class="form-row">
-                            <label for="description" class="form-label">Description</label>
-                            <textarea id="description" name="description" rows="5" class="textarea"
-                                placeholder="Describe the task, rubric, and notes…">{{ old('description') }}</textarea>
-                            @error('description') <div class="error">{{ $message }}</div> @enderror
-                        </div>
+    {{-- Description --}}
+    <div class="form-row">
+        <label for="description" class="form-label">Description</label>
+        <textarea id="description" 
+                  name="description" 
+                  rows="5" 
+                  class="textarea @error('description') is-invalid @enderror"
+                  placeholder="Describe the task, rubric, and notes…">{{ old('description') }}</textarea>
+        @error('description') 
+            <div class="error text-danger">{{ $message }}</div> 
+        @enderror
+    </div>
 
-                        <div class="form-row">
-                            <label for="deadline" class="form-label">Deadline</label>
-                            <input id="deadline" name="deadline" type="datetime-local" class="input"
-                                value="{{ old('deadline') }}" />
-                            @error('deadline') <div class="error">{{ $message }}</div> @enderror
-                        </div>
+    {{-- Deadline --}}
+    <div class="form-row">
+        <label for="deadline" class="form-label">Deadline</label>
+        <input id="deadline" 
+               name="deadline" 
+               type="datetime-local" 
+               class="input @error('deadline') is-invalid @enderror"
+               value="{{ old('deadline') }}" />
+        @error('deadline') 
+            <div class="error text-danger">{{ $message }}</div> 
+        @enderror
+    </div>
 
-                        {{-- Submission Type --}}
-                        <div class="form-row">
-                            <label for="submission_type" class="form-label">Submission Type <span
-                                    class="req">*</span></label>
-                            <select id="submission_type" name="submission_type" class="input" required>
-                                <option value="both" {{ old('submission_type','both') === 'both' ? 'selected' : '' }}>
-                                    Text or Pictures</option>
-                                <option value="text" {{ old('submission_type') === 'text' ? 'selected' : '' }}>Text only
-                                </option>
-                                <option value="pdf" {{ old('submission_type') === 'pdf'  ? 'selected' : '' }}>Pictures only
-                                </option>
-                            </select>
-                            @error('submission_type') <div class="error">{{ $message }}</div> @enderror
-                            <p class="muted" style="margin:.35rem 0 0;">Choose how students are allowed to submit.</p>
-                        </div>
+    {{-- Submission Type --}}
+    <div class="form-row">
+        <label for="submission_type" class="form-label">Submission Type <span class="req">*</span></label>
+        <select id="submission_type" 
+                name="submission_type" 
+                class="input @error('submission_type') is-invalid @enderror" 
+                required>
+            <option value="both" {{ old('submission_type', 'both') === 'both' ? 'selected' : '' }}>
+                Text or Pictures
+            </option>
+            <option value="text" {{ old('submission_type') === 'text' ? 'selected' : '' }}>
+                Text only
+            </option>
+            <option value="pdf" {{ old('submission_type') === 'pdf' ? 'selected' : '' }}>
+                Pictures only
+            </option>
+        </select>
+        @error('submission_type') 
+            <div class="error text-danger">{{ $message }}</div> 
+        @enderror
+        <p class="muted" style="margin:.35rem 0 0;">Choose how students are allowed to submit.</p>
+    </div>
 
-                        {{-- (Optional) Create placeholder submissions for all students --}}
-                        <div class="form-row form-row--inline">
-                            <label class="checkbox">
-                                <input type="checkbox" name="create_placeholders" value="1"
-                                    {{ old('create_placeholders', true) ? 'checked' : '' }}>
-                                <span>Create placeholder submissions for all students</span>
-                            </label>
-                        </div>
+    {{-- Create Placeholders --}}
+    <div class="form-row form-row--inline">
+        <label class="checkbox">
+            <input type="checkbox" 
+                   name="create_placeholders" 
+                   value="1"
+                   {{ old('create_placeholders', true) ? 'checked' : '' }}>
+            <span>Create placeholder submissions for all students</span>
+        </label>
+    </div>
 
-
-                        <div class="form-actions">
-                            <button class="btn primary" type="submit">Create Assignment</button>
-                            <button class="btn ghost" type="reset">Reset</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
+    {{-- Actions --}}
+    <div class="form-actions">
+        <button class="btn btn-primary" type="submit">Create Assignment</button>
+        <button class="btn btn-secondary" type="reset">Reset</button>
+    </div>
+</form>
 
             {{-- RIGHT: Students then Assignments --}}
             <aside class="right-col stack">
