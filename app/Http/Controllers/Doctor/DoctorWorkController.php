@@ -107,7 +107,7 @@ class DoctorWorkController extends Controller
         $aiSubs = (clone $base)
             ->where(function ($q) {
                 $q->whereNotNull('file_path')
-                    ->orWhereNotNull('image_path');
+                   ;
             })
             ->paginate($perPage, ['*'], 'ai_page')
             ->appends($request->query());
@@ -116,7 +116,6 @@ class DoctorWorkController extends Controller
         $textSubs = (clone $base)
             ->whereNotNull('content')
             ->whereNull('file_path')
-            ->whereNull('image_path')
             ->paginate($perPage, ['*'], 'text_page')
             ->appends($request->query());
 

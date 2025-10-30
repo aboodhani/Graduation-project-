@@ -24,7 +24,7 @@ class SectionController extends Controller
         $sections = Section::withCount(['users as students_count', 'assignments'])
             ->where('created_by', $doctorId)
             ->orderBy('created_at', 'desc')
-            ->get();
+            ->paginate(10); // <-- This is the fix
 
         return view('doctor.sections.index', compact('sections'));
     }
@@ -33,30 +33,29 @@ class SectionController extends Controller
      * Store a newly created section.
      * Returns JSON (201) when requested via AJAX, otherwise redirects to section show.
      */
-    public function store(Request $request)
-    {
-        $data = $request->validate([
-            'title'       => 'required|string|max:150',
-            'description' => 'nullable|string|max:2000',
-        ]);
+public function store(Request $request)
+{
+    // 1. VALIDATE (now includes course_name)
+    $validatedData = $request->validate([
+        'name' => ['required', 'string', 'max:255'],
+        'course_name' => ['nullable', 'string', 'max:255'],
+    ]);
 
-        $section = Section::create([
-            'title' => $data['title'],
-            'description' => $data['description'] ?? null,
-            'created_by' => $request->user()->id,
-        ]);
+    // 2. PREPARE (add the creator)
+    $data = $validatedData;
+    $data['created_by'] = auth()->id();
 
-        // إذا الطلب من نوع AJAX (fetch/fetch API) أعد JSON
-        if ($request->wantsJson() || $request->ajax()) {
-            return response()->json([
-                'ok' => true,
-                'section' => $section,
-            ], 201);
-        }
-
-        return redirect()->route('doctor.sections.show', $section->id)
-            ->with('success', 'Section created successfully.');
+    // 3. CREATE
+    try {
+        Section::create($data);
+    } catch (\Exception $e) {
+        // Handle potential database errors
+        return back()->with('error', 'Could not create section. Please try again.');
     }
+
+    // 4. REDIRECT
+    return back()->with('success', 'Section created successfully!');
+}
 
     /**
      * Show details for a single section (students, assignments).
@@ -69,7 +68,7 @@ class SectionController extends Controller
         }
 
         // جلب الطلاب والواجبات مع عدد التسليمات لكل واجب
-        $students = $section->users()->orderBy('name')->get();
+        $students = $section->users()->orderBy('users.name')->get();
         $assignments = $section->assignments()->withCount('submissions')->orderBy('created_at', 'desc')->get();
 
         return view('doctor.sections.show', compact('section', 'students', 'assignments'));

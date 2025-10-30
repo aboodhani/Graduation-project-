@@ -3,20 +3,45 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Section;
+use App\Models\Submission;
+use App\Models\User;
 
 class DoctorDashboardController extends Controller
 {
-    public function index(Request $request)
-    {
-        $doctor = $request->user();
+public function index()
+{
+    $doctorId = auth()->id();
 
-        // sections من الداتابيس لو عندك موديل، مؤقتًا بنحط Mock
-        $sections = [
-            ['id' => 1, 'name' => 'Section 1'],
-            ['id' => 2, 'name' => 'Section 2'],
-            ['id' => 3, 'name' => 'Section 3'],
-        ];
+    // 1. Get stats
+    $sectionCount = Section::where('created_by', $doctorId)->count();
 
-        return view('doctor.dashboard', compact('doctor', 'sections'));
-    }
+    // Count students who are in the doctor's sections
+    $studentCount = User::where('role', 'student')
+        ->whereHas('sections', function ($query) use ($doctorId) {
+            $query->where('created_by', $doctorId);
+        })->count();
+
+    // Count submissions from students in the doctor's sections
+    $submissionCount = Submission::whereHas('student.sections', function ($query) use ($doctorId) {
+        $query->where('created_by', $doctorId);
+    })->count();
+
+    // 2. Get 5 recent submissions
+    $recentSubmissions = Submission::with(['student', 'assignment'])
+        ->whereHas('student.sections', function ($query) use ($doctorId) {
+            $query->where('created_by', $doctorId);
+        })
+        ->latest() // Order by newest
+        ->take(5)  // Get the top 5
+        ->get();
+
+    // 3. Return the view with all the new data
+    return view('doctor.dashboard', compact(
+        'sectionCount',
+        'studentCount',
+        'submissionCount',
+        'recentSubmissions'
+    ));
+}
 }

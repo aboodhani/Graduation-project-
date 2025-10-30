@@ -9,7 +9,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Section extends Model
 {
     protected $fillable = [
-        'title',
+        'name',  // <-- THIS IS THE FIX
+        'course_name',
         'description',
         'created_by',
     ];
@@ -30,13 +31,11 @@ class Section extends Model
     /**
      * Students registered in this section (many-to-many pivot: section_user).
      */
-    public function users(): BelongsToMany
-    {
-        return $this->belongsToMany(\App\Models\User::class, 'section_user')
-                    ->withTimestamps()
-                    ->withPivot('joined_at');
-    }
-
+public function users(): BelongsToMany
+{
+    return $this->belongsToMany(\App\Models\User::class, 'section_user')
+            ->withTimestamps();
+}
     /**
      * Assignments that belong to this section.
      */

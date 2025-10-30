@@ -1,44 +1,35 @@
 @extends('layouts.doctor')
-@vite(['resources/css/style.css'])
+
 
 <style>
-@media (min-width: 992px) {
-
-    .app-main,
-    .wrap,
-    .container,
-    .table-responsive,
-    .filters-toolbar {
-        padding-right: calc(var(--right-tabs-w) + 20px) !important;
+    .sticky-thead th {
+        position: sticky;
+        /* Use 70px to match the new header height from style.css */
+        top: 70px; 
+        z-index: 5;
+        background: var(--bs-table-bg, #fff);
+        box-shadow: inset 0 -1px 0 rgba(0, 0, 0, .06);
     }
-}
 
-.sticky-thead th {
-    position: sticky;
-    top: var(--header-h);
-    z-index: 5;
-    background: var(--bs-table-bg, #fff);
-    box-shadow: inset 0 -1px 0 rgba(0, 0, 0, .06);
-}
+    .students-table tbody tr {
+        height: 76px;
+    }
 
-.students-table tbody tr {
-    height: 76px;
-}
+    html,
+    body {
+        overflow-x: hidden;
+        max-width: 100%;
+    }
 
-html,
-body {
-    overflow-x: hidden;
-    max-width: 100%;
-}
+    .table-responsive {
+        overflow-y: hidden;
+    }
 
-.table-responsive {
-    overflow-y: hidden;
-}
-
-.badge {
-    font-size: .8rem;
-}
+    .badge {
+        font-size: .8rem;
+    }
 </style>
+
 
 @section('content')
 <main class="app-main">

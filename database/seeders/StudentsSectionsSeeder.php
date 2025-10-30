@@ -14,72 +14,78 @@ class StudentsSectionsSeeder extends Seeder
 {
     public function run()
     {
-        // تأكّد من أن هناك مستخدم (doctor/admin) لنعطي created_by للأقسام إن لزم
-        $creatorId = 1; // غيّر إذا تريد ID آخر
+        // Get the doctor user. Assumes DoctorUserSeeder ran first.
+        $doctor = User::where('role', 'doctor')->first();
+        
+        // If no doctor, create one as a fallback.
+        if (!$doctor) {
+             $doctor = User::factory()->create([
+                'name' => 'Default Doctor',
+                'email' => 'doctor@example.com',
+                'password' => Hash::make('password'),
+                'role' => 'doctor',
+            ]);
+        }
+        $creatorId = $doctor->id;
 
         // Ensure sections 1 and 2 exist (create if missing)
-        $section1 = Section::find(1);
-        if (!$section1) {
-            $section1 = Section::create([
-                'title'      => 'Section 1',
+        $section1 = Section::firstOrCreate(
+            ['name' => 'Section 1'], // <-- THE FIX (was 'title')
+            [
                 'description'=> 'Automatically created section 1 (seed).',
                 'created_by' => $creatorId,
-            ]);
-        }
+                'teacher_id' => $creatorId,
+            ]
+        );
 
-        $section2 = Section::find(2);
-        if (!$section2) {
-            $section2 = Section::create([
-                'title'      => 'Section 2',
+        $section2 = Section::firstOrCreate(
+            ['name' => 'Section 2'], // <-- THE FIX (was 'title')
+            [
                 'description'=> 'Automatically created section 2 (seed).',
                 'created_by' => $creatorId,
-            ]);
-        }
+                'teacher_id' => $creatorId
+            ]
+        );
 
         // Students to create (name, student_number)
         $students = [
             ['name' => 'Ahmad Al-Masri',   'student_number' => 'S2025001'],
-            ['name' => 'Lina Saeed',      'student_number' => 'S2025002'],
-            ['name' => 'Khaled Ibrahim',  'student_number' => 'S2025003'],
-            ['name' => 'Mona Hamed',      'student_number' => 'S2025004'],
-            ['name' => 'Omar Haddad',     'student_number' => 'S2025005'],
-            ['name' => 'Sara Youssef',    'student_number' => 'S2025006'],
-            ['name' => 'Tamer Alnouri',   'student_number' => 'S2025007'],
-            ['name' => 'Rana Khalil',     'student_number' => 'S2025008'],
+            ['name' => 'Lina Saeed',       'student_number' => 'S2025002'],
+            ['name' => 'Khaled Ibrahim',   'student_number' => 'S2025003'],
+            ['name' => 'Mona Hamed',       'student_number' => 'S2025004'],
+            ['name' => 'Omar Haddad',      'student_number' => 'S2025005'],
+            ['name' => 'Sara Youssef',     'student_number' => 'S2025006'],
+            ['name' => 'Tamer Alnouri',    'student_number' => 'S2025007'],
+            ['name' => 'Rana Khalil',      'student_number' => 'S2025008'],
         ];
 
-        // Create students and attach them: first 4 -> section1, last 4 -> section2
+        // Create students and attach them
         foreach ($students as $idx => $s) {
-            $email = Str::slug($s['name'], '.') . '@example.test'; // e.g. ahmad-al-masri@example.test
-            // Avoid duplicates: إذا الايميل موجود ما نعيد الإنشاء
+            $email = Str::slug($s['name'], '.') . '@example.test'; 
             $user = User::firstOrCreate(
                 ['email' => $email],
                 [
                     'name' => $s['name'],
                     'student_number' => $s['student_number'] ?? ('SN' . mt_rand(1000,9999)),
-                    'password' => Hash::make('password'), // كلمة افتراضية: password — غيّرها بعدين
-                    // لو عندك حقل role أو type اضف هنا 'role' => 'student'
+                    'password' => Hash::make('password'),
+                    'role' => 'student' // Added role
                 ]
             );
 
             // attach to section 1 or 2
-            $joinedAt = Carbon::now();
+            // attach to section 1 or 2
+            // $joinedAt = Carbon::now(); // <-- We don't need this
             if ($idx < 4) {
-                // section 1
-                // استخدم syncWithoutDetaching مع بيانات pivot ليمنع تكرار
                 $section1->users()->syncWithoutDetaching([
-                    $user->id => ['joined_at' => $joinedAt]
+                    $user->id 
                 ]);
             } else {
-                // section 2
                 $section2->users()->syncWithoutDetaching([
-                    $user->id => ['joined_at' => $joinedAt]
+                    $user->id
                 ]);
             }
-
-            $this->command->info("Student created/linked: {$user->email} -> section " . ($idx < 4 ? '1' : '2'));
+            $this->command->info("Student created/linked: {$user->email}");
         }
-
         $this->command->info('Students and sections seeding completed.');
     }
 }

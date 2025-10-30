@@ -1,16 +1,15 @@
 @extends('layouts.app')
-@vite (['resources/css/style.css', 'resources/js/style.js'])
-@vite (['resources/css/history.css'])
+
 @section('content')
 
     <!-- ========== HOME ========== -->
     <section class="view view-home" data-view="home" aria-labelledby="homeHeading">
         <div class="hero">
             <img src="{{ asset('images/hero.png') }}" alt="dental banner" class="hero-img" />
-            <div class="hero-text">
-                <h2 id="homeHeading">Welcome back <span
-                        id="welcomeName">{{ auth()->check() ? auth()->user()->name : '—' }}</span> !</h2>
-            </div>
+           <div class="hero-text">
+                     <h2 id="homeHeading" class="hero-title">Welcome back <span
+                         id="welcomeName">{{ auth()->check() ? auth()->user()->name : '—' }}</span> !</h2>
+         </div>
         </div>
 
         <div class="home-body">

@@ -7,85 +7,47 @@
   <title>Students Work — AI-based Working Length Tool</title>
 
   <link rel="icon" href="{{ asset('assets/image/logo.png') }}" />
-  <link rel="stylesheet" href="{{ asset('work.css') }}" />
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
-    integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+  @vite(['resources/js/app.js'])
 
-  <style>
-    /* Sidebar (desktop) */
-    .right-tabs {
-      position: fixed;
-      top: 64px;
-      /* تحت الهيدر الثابت */
-      right: 0;
-      width: 200px;
-      height: calc(100vh - 64px);
-      background: #fff;
-      border-left: 1px solid #dee2e6;
-      padding: 1rem;
-      overflow: auto;
-      z-index: 1020;
-    }
-
-    .tabs-nav .tab-link {
-      display: flex;
-      align-items: center;
-      gap: .5rem;
-      color: #333;
-      text-decoration: none;
-      padding: .5rem .25rem;
-      border-radius: .5rem;
-    }
-
-    .tabs-nav .tab-link:hover {
-      background: #f8f9fa;
-    }
-
-    .tabs-nav .tab-link.active {
-      color: #0d6efd;
-      font-weight: 600;
-    }
-  </style>
 </head>
 
 <body class="bg-light">
 
   <!-- Header -->
-  <header class="app-header navbar navbar-expand-lg navbar-light bg-white shadow-sm border-bottom fixed-top py-2">
-    <div class="container-fluid bg-white align-items-center">
+<header class="app-header bg-white shadow-sm border-bottom fixed-top">
 
-      <button class="navbar-toggler d-lg-none me-2 order-2" type="button" data-bs-toggle="offcanvas"
-        data-bs-target="#sidebarOffcanvas" aria-controls="sidebarOffcanvas" aria-label="Toggle sidebar">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-
-      <h1 class="app-title navbar-brand  d-none d-lg-block mx-auto order-lg-2">AI-based Working Length Tool</h1>
-
-      <div class="d-none d-lg-flex align-items-center gap-2 order-lg-3">
-   
-        @auth
-          <form method="POST" action="{{ route('logout') }}" class="m-0">
-            @csrf
-            <button type="submit" class="btn btn-outline-secondary btn-sm">Logout</button>
-          </form>
-        @endauth
-        @guest
-          <a href="{{ route('login') }}" class="btn btn-primary btn-sm">
-            <span class="me-1">🔑</span> Login
-          </a>
-        @endguest
-      </div>
-
-      <div class="navbar-text text-end  order-lg-1">
-        <div class="user-name fw-semibold small" id="userNameHeader">
+    <div class="header-left d-none d-lg-block"> <div class="user-name fw-semibold small" id="userNameHeader">
           {{ auth()->check() ? auth()->user()->name : '—' }}
         </div>
         <div class="user-id text-muted small" id="userIdHeader">
           {{ auth()->check() ? (auth()->user()->student_number ?? '—') : '—' }}
         </div>
-      </div>
     </div>
-  </header>
+
+    <h1 class="app-title navbar-brand mx-auto">AI-based Working Length Tool</h1>
+
+    <div class="header-right">
+        <div class="d-none d-lg-flex align-items-center gap-2">
+            @auth
+              <form method="POST" action="{{ route('logout') }}" class="m-0">
+                @csrf
+                <button type="submit" class="btn btn-outline-secondary btn-sm">Logout</button>
+              </form>
+            @endauth
+            @guest
+              <a href="{{ route('login') }}" class="btn btn-primary btn-sm">
+                <span class="me-1">🔑</span> Login
+              </a>
+            @endguest
+        </div>
+
+        <button class="navbar-toggler d-lg-none" type="button" data-bs-toggle="offcanvas"
+            data-bs-target="#sidebarOffcanvas" aria-controls="sidebarOffcanvas" aria-label="Toggle sidebar">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+    </div>
+</header>
+
 
   <aside class="right-tabs d-none d-lg-block" role="navigation" aria-label="Sidebar">
     <nav class="tabs-nav">
@@ -194,7 +156,7 @@
 
 
   <!-- Main -->
-  <main class="app-main container-fluid pt-4">
+  <main class="app-main container-fluid">
     @yield('content')
   </main>
 @stack('scripts')
