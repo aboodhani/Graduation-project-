@@ -1,12 +1,3 @@
-// --- CSS ---
-// Import Bootstrap CSS
-import 'bootstrap/dist/css/bootstrap.min.css';
-
-// Import Tailwind's entrypoint
-import '../css/app.css';
-
-// Import your custom styles (loads last to override)
-import '../css/style.css';
 
 
 // --- JAVASCRIPT ---

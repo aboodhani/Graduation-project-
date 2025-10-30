@@ -467,3 +467,16 @@ body {
   transform: translateY(-2px);
   box-shadow: 0 12px 28px rgba(11, 21, 85, .3);
 }
+
+.container.fade-in,
+.fade-in {
+  animation: none !important;
+  opacity: 1 !important;
+}
+
+/* Remove slide-up animations */
+.slide-up {
+  animation: none !important;
+  transform: none !important;
+  opacity: 1 !important;
+}
